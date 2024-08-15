@@ -1,74 +1,31 @@
-import React, { useState } from "react";
-import AuthForm from "./components/authform";
-import Message from "./components/message";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import Home from './components/Home';
+import Register from './components/register';
+import Login from './components/login';
+import Dashboard from './components/dashboard';
+import { AuthProvider } from './protectedroutes/authcontext';
+import ProtectedRoute from './protectedroutes/protectedroutes';
 
-const App = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // new state for message type (error/success)
-
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-    setMessage("");
-  };
-
-  const handleRegister = (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.find((user) => user.email === email);
-
-    if (userExists) {
-      setMessageType("error");
-      setMessage("User already exists.");
-    } else {
-      users.push({ email, password });
-      localStorage.setItem("users", JSON.stringify(users));
-      setMessageType("success");
-      setMessage("Registration successful. Please log in.");
-      setIsLogin(true);
-    }
-  };
-
-  const handleLogin = (email, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find((user) => user.email === email && user.password === password);
-
-    if (user) {
-      setMessageType("success");
-      setMessage("Login successful!");
-    } else {
-      setMessageType("error");
-      setMessage("Invalid email or password.");
-    }
-  };
-
-  const handleSubmit = (email, password) => {
-    if (isLogin) {
-      handleLogin(email, password);
-    } else {
-      handleRegister(email, password);
-    }
-  };
-
+function App() {
   return (
-    <div style={styles.container}>
-      <AuthForm
-        isLogin={isLogin}
-        onToggleForm={toggleForm}
-        onSubmit={handleSubmit}
-      />
-      <Message message={message} type={messageType} /> {/* Properly use Message component */}
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
-};
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    backgroundColor: "#f4f4f4",
-  },
-};
+}
 
 export default App;
