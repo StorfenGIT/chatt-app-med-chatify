@@ -1,35 +1,74 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import AuthForm from "./components/authform";
+import Message from "./components/message";
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [isLogin, setIsLogin] = useState(true);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // new state for message type (error/success)
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setMessage("");
+  };
+
+  const handleRegister = (email, password) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const userExists = users.find((user) => user.email === email);
+
+    if (userExists) {
+      setMessageType("error");
+      setMessage("User already exists.");
+    } else {
+      users.push({ email, password });
+      localStorage.setItem("users", JSON.stringify(users));
+      setMessageType("success");
+      setMessage("Registration successful. Please log in.");
+      setIsLogin(true);
+    }
+  };
+
+  const handleLogin = (email, password) => {
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const user = users.find((user) => user.email === email && user.password === password);
+
+    if (user) {
+      setMessageType("success");
+      setMessage("Login successful!");
+    } else {
+      setMessageType("error");
+      setMessage("Invalid email or password.");
+    }
+  };
+
+  const handleSubmit = (email, password) => {
+    if (isLogin) {
+      handleLogin(email, password);
+    } else {
+      handleRegister(email, password);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={styles.container}>
+      <AuthForm
+        isLogin={isLogin}
+        onToggleForm={toggleForm}
+        onSubmit={handleSubmit}
+      />
+      <Message message={message} type={messageType} /> {/* Properly use Message component */}
+    </div>
+  );
+};
 
-export default App
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    backgroundColor: "#f4f4f4",
+  },
+};
+
+export default App;
