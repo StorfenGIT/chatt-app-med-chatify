@@ -85,11 +85,11 @@ input[type=text],
   }
 
 }
-/* Add this to your global CSS or Tailwind configuration */
+
 .message-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem; /* Adjust the spacing between messages */
+  gap: 0.5rem; 
 }
 
 .message-item {
@@ -98,11 +98,11 @@ input[type=text],
 }
 
 .message-item.user {
-  justify-content: flex-end; /* Align user messages to the right */
+  justify-content: flex-end; 
 }
 
 .message-item.other {
-  justify-content: flex-start; /* Align other messages to the left */
+  justify-content: flex-start; 
 }
 
 .message-bubble {

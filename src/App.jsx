@@ -7,12 +7,12 @@ import Register from './components/RegisterPage';
 import Auth from './auth/Auth';
 import './index.css';
 
-// Wrapper component to protect routes
+
 function ProtectedRoute({ element, token }) {
     return token ? element : <Navigate to="/login" />;
 }
 
-// Error component to display error messages
+
 const ErrorComponent = ({ error }) => {
   if (!error) return null;
   return (
@@ -22,7 +22,7 @@ const ErrorComponent = ({ error }) => {
   );
 };
 
-// Loading component to display loading status
+
 const LoadingComponent = () => (
   <div style={{ textAlign: 'center', padding: '1em' }}>
     <p>Loading...</p>
@@ -36,13 +36,13 @@ const App = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Handle token and userId storage directly in the useState initialization
+ 
   useEffect(() => {
     localStorage.setItem('token', token);
     localStorage.setItem('userId', userId);
   }, [token, userId]);
 
-  // Fetch CSRF token with error and loading handling
+
   useEffect(() => {
     const fetchCsrfToken = async () => {
       setLoading(true);
@@ -63,7 +63,7 @@ const App = () => {
     fetchCsrfToken();
   }, []);
 
-  // Check for loading status
+ 
   if (loading) {
     return <LoadingComponent />;
   }
@@ -77,7 +77,7 @@ const App = () => {
           <Route path="/" element={<Register csrfToken={csrfToken} />} />
           <Route path="/login" element={<Login setToken={setToken} setUserId={setUserId} csrfToken={csrfToken} />} />
           <Route path="/chat" element={<ProtectedRoute element={<Chat token={token} userId={userId} />} token={token} />} />
-          {/* Redirect to login if no token is present */}
+          {}
           <Route path="*" element={<Navigate to={token ? "/chat" : "/login"} />} />
         </Routes>
       </Router>

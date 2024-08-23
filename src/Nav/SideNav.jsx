@@ -5,7 +5,7 @@ const SideNav = ({ token, setToken }) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Log the token value to help with debugging
+  
   useEffect(() => {
     console.log('Token value:', token);
   }, [token]);
@@ -23,7 +23,7 @@ const SideNav = ({ token, setToken }) => {
 
   return (
     <div className="relative">
-      {/* Logout button positioned at the top left */}
+      {}
       {token && (
         <button
           onClick={handleLogout}
@@ -33,7 +33,7 @@ const SideNav = ({ token, setToken }) => {
         </button>
       )}
 
-      {/* Side navigation */}
+      {}
       <div
         className={`fixed inset-0 bg-gray-800 bg-opacity-75 transform ${
           isOpen ? 'translate-x-0' : '-translate-x-full'

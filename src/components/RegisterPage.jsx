@@ -29,7 +29,7 @@ const Register = ({ csrfToken }) => {
         if (!res.ok) {
           throw new Error(data.message || "Användarnamn eller email finns redan!");
         }
-        // Spara användaruppgifter och redirecta till login
+        
         localStorage.setItem("username", username);
         localStorage.setItem("email", email);
         navigate("/login", { state: { message: "Grattis! Du har registrerat dig!" } });

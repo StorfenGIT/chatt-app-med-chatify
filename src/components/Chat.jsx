@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Function to sanitize message text
+
 const sanitizeText = (text) => {
   const element = document.createElement('div');
   element.innerText = text;
@@ -17,27 +17,27 @@ const Chat = ({ token }) => {
   const [users, setUsers] = useState([]);
   const [conversations, setConversations] = useState(JSON.parse(localStorage.getItem('conversations')) || []);
 
-  // Fake chat data
+ 
   const [fakeChat, setFakeChat] = useState([
     {
       "text": "Välkommen till min testapp",
       "avatar": "https://i.pravatar.cc/100",
       "username": "Anonym användare!",
-      "userId": "fakeId1",  // Fake user id
+      "userId": "fakeId1",  
       "conversationId": null
     },
     {
       "text": "Du kan skicka och ta bort dina meddelanden och du får en autogeneread avatar!",
       "avatar": "https://i.pravatar.cc/100",
       "username": "Anonym användare",
-      "userId": "fakeId1",  // Fake user id
+      "userId": "fakeId1",  
       "conversationId": null
     },
     {
       "text": "Okej! Låter bra!",
       "avatar": "https://i.pravatar.cc/101",
       "username": username,
-      "userId": userId,  // User's id
+      "userId": userId,  
       "conversationId": null
     }
   ]);
@@ -156,7 +156,7 @@ const Chat = ({ token }) => {
           </h2>
           <div className="flex-1 overflow-auto bg-white bg-opacity-60 backdrop-blur-lg rounded-lg shadow-lg p-4">
   <div className="message-container">
-    {/* Display fakeChat messages */}
+    {}
     {fakeChat.map((message, index) => (
       <div
         key={index}
@@ -171,7 +171,7 @@ const Chat = ({ token }) => {
         </div>
       </div>
     ))}
-    {/* Display real messages */}
+    {}
     {messages.map((message) => (
       <div
         key={message.id}
