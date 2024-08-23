@@ -155,47 +155,48 @@ const Chat = ({ token }) => {
             Chattrum med Anonym användare{conversations.find((convo) => convo.id === activeConversation)?.name || ''}
           </h2>
           <div className="flex-1 overflow-auto bg-white bg-opacity-60 backdrop-blur-lg rounded-lg shadow-lg p-4">
-            <div className="flex flex-col space-y-2">
-              {/* Display fakeChat messages */}
-              {fakeChat.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.userId === userId ? 'justify-end' : 'justify-start'} mb-2`}
-                >
-                  <div className={`flex items-start ${message.userId === userId ? 'flex-row-reverse' : ''} space-x-2`}>
-                    <img src={message.avatar} alt="avatar" className="w-8 h-8 rounded-full" />
-                    <div className={`max-w-xs p-2 rounded-lg ${message.userId === userId ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                      <div className="text-sm font-semibold">{message.username}</div>
-                      <p className="text-sm" dangerouslySetInnerHTML={{ __html: sanitizeText(message.text) }}></p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {/* Display real messages */}
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.userId === userId ? 'justify-end' : 'justify-start'} mb-2`}
-                >
-                  <div className={`flex items-start ${message.userId === userId ? 'flex-row-reverse' : ''} space-x-2`}>
-                    <img src={message.avatar || 'https://i.pravatar.cc/100'} alt="avatar" className="w-8 h-8 rounded-full" />
-                    <div className={`max-w-xs p-2 rounded-lg ${message.userId === userId ? 'bg-gray-800 text-white' : 'bg-gray-200 text-gray-800'}`}>
-                      <div className="text-sm font-semibold">{message.username}</div>
-                      <p className="text-sm" dangerouslySetInnerHTML={{ __html: sanitizeText(message.text) }}></p>
-                      {message.userId === userId && (
-                        <button
-                          onClick={() => handleDeleteMessage(message.id)}
-                          className="text-red-500 hover:text-red-700 ml-2"
-                        >
-                          Radera
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+  <div className="message-container">
+    {/* Display fakeChat messages */}
+    {fakeChat.map((message, index) => (
+      <div
+        key={index}
+        className={`message-item ${message.userId === userId ? 'user' : 'other'}`}
+      >
+        <div className={`flex items-start ${message.userId === userId ? 'flex-row-reverse' : ''} space-x-2`}>
+          <img src={message.avatar} alt="avatar" className="message-avatar w-8 h-8 rounded-full" />
+          <div className={`message-bubble ${message.userId === userId ? 'user' : 'other'}`}>
+            <div className="text-sm font-semibold">{message.username}</div>
+            <p className="text-sm" dangerouslySetInnerHTML={{ __html: sanitizeText(message.text) }}></p>
           </div>
+        </div>
+      </div>
+    ))}
+    {/* Display real messages */}
+    {messages.map((message) => (
+      <div
+        key={message.id}
+        className={`message-item ${message.userId === userId ? 'user' : 'other'}`}
+      >
+        <div className={`flex items-start ${message.userId === userId ? 'flex-row-reverse' : ''} space-x-2`}>
+          <img src={message.avatar || 'https://i.pravatar.cc/100'} alt="avatar" className="message-avatar w-8 h-8 rounded-full" />
+          <div className={`message-bubble ${message.userId === userId ? 'user' : 'other'}`}>
+            <div className="text-sm font-semibold">{message.username}</div>
+            <p className="text-sm" dangerouslySetInnerHTML={{ __html: sanitizeText(message.text) }}></p>
+            {message.userId === userId && (
+              <button
+                onClick={() => handleDeleteMessage(message.id)}
+                className="text-red-500 hover:text-red-700 ml-2"
+              >
+                Radera
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
           <div className="flex items-center mt-4">
             <input
               id="newMessageInput"

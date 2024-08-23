@@ -85,3 +85,42 @@ input[type=text],
   }
 
 }
+/* Add this to your global CSS or Tailwind configuration */
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* Adjust the spacing between messages */
+}
+
+.message-item {
+  display: flex;
+  align-items: flex-start;
+}
+
+.message-item.user {
+  justify-content: flex-end; /* Align user messages to the right */
+}
+
+.message-item.other {
+  justify-content: flex-start; /* Align other messages to the left */
+}
+
+.message-bubble {
+  max-width: 75%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.message-bubble.user {
+  background-color: #333;
+  color: white;
+}
+
+.message-bubble.other {
+  background-color: #e5e5e5;
+  color: black;
+}
+
+.message-avatar {
+  margin-right: 0.5rem;
+}
