@@ -1,38 +1,88 @@
-import React, { useState } from 'react';
-import LoginPage from './components/LoginPage';
-import RegisterPage from './components/RegisterPage';
-import Dashboard from './components/Board';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import SideNav from './Nav/SideNav';
+import Login from './components/LoginPage';
+import Chat from './components/Chat';
+import Register from './components/RegisterPage';
+import Auth from './auth/Auth';
+import './index.css';
 
-function App() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [accounts, setAccounts] = useState([]); // State to store all accounts
-  const [loggedInUser, setLoggedInUser] = useState(null); // State to store the logged-in user
+// Wrapper component to protect routes
+function ProtectedRoute({ element, token }) {
+    return token ? element : <Navigate to="/login" />;
+}
 
-  const handleRegister = (credentials) => {
-    setAccounts((prevAccounts) => [...prevAccounts, credentials]); // Store the new account
-    setIsLogin(true); // Switch to login after registration
-  };
-
-  const handleLogin = (credentials) => {
-    const user = accounts.find(account => account.username === credentials.username && account.password === credentials.password);
-    if (user) {
-      setLoggedInUser(user); // Set the logged-in user
-    } else {
-      alert("Invalid username or password.");
-    }
-  };
-
+// Error component to display error messages
+const ErrorComponent = ({ error }) => {
+  if (!error) return null;
   return (
-    <div className="App">
-      {loggedInUser ? (
-        <Dashboard user={loggedInUser} accounts={accounts} />
-      ) : isLogin ? (
-        <LoginPage switchToRegister={() => setIsLogin(false)} onLogin={handleLogin} />
-      ) : (
-        <RegisterPage switchToLogin={() => setIsLogin(true)} onRegister={handleRegister} />
-      )}
+    <div style={{ color: 'red', textAlign: 'center', margin: '1em 0' }}>
+      <p>{error}</p>
     </div>
   );
-}
+};
+
+// Loading component to display loading status
+const LoadingComponent = () => (
+  <div style={{ textAlign: 'center', padding: '1em' }}>
+    <p>Loading...</p>
+  </div>
+);
+
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [userId, setUserId] = useState(localStorage.getItem('userId') || '');
+  const [csrfToken, setCsrfToken] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  // Handle token and userId storage directly in the useState initialization
+  useEffect(() => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('userId', userId);
+  }, [token, userId]);
+
+  // Fetch CSRF token with error and loading handling
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('https://chatify-api.up.railway.app/csrf', {
+          method: 'PATCH',
+        });
+        if (!response.ok) throw new Error('Failed to fetch CSRF token');
+        const data = await response.json();
+        setCsrfToken(data.csrfToken);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCsrfToken();
+  }, []);
+
+  // Check for loading status
+  if (loading) {
+    return <LoadingComponent />;
+  }
+
+  return (
+    <div>
+      <ErrorComponent error={error} />
+      <Router>
+        <SideNav token={token} setToken={setToken} />
+        <Routes>
+          <Route path="/" element={<Register csrfToken={csrfToken} />} />
+          <Route path="/login" element={<Login setToken={setToken} setUserId={setUserId} csrfToken={csrfToken} />} />
+          <Route path="/chat" element={<ProtectedRoute element={<Chat token={token} userId={userId} />} token={token} />} />
+          {/* Redirect to login if no token is present */}
+          <Route path="*" element={<Navigate to={token ? "/chat" : "/login"} />} />
+        </Routes>
+      </Router>
+    </div>
+  );
+};
 
 export default App;
