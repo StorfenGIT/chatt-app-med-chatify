@@ -30,9 +30,9 @@ const Login = ({ setToken, setUserId, csrfToken }) => {
       );
 
       const data = await response.json();
-
+// Har justerat felmeddelande till svenska
       if (!response.ok) {
-        throw new Error("Invalid credentials");
+        throw new Error("Fel användaruppgifter, vänligen försök igen!");
       }
 
       const token = data.token;
